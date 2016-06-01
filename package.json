@@ -1,0 +1,34 @@
+{
+  "name": "linter-pug",
+  "main": "./lib/init",
+  "version": "1.0.0",
+  "description": "Linter plugin for Stylus, using `pug-lint`.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matthojo/atom-linter-pug.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/matthojo/atom-linter-pug/issues"
+  },
+  "homepage": "https://github.com/matthojo/atom-linter-pug",
+  "providedServices": {
+    "linter": {
+      "versions": {
+        "1.0.0": "provideLinter"
+      }
+    }
+  },
+  "dependencies": {
+    "pug-lint": "^2.1.9",
+    "atom-linter": "^4.0.0",
+    "atom-package-deps": "^3.0.0"
+  },
+  "package-deps": [
+    "linter"
+  ]
+}
