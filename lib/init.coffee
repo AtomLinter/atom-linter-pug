@@ -59,14 +59,15 @@ module.exports =
         parameters.push('-r', 'inline')
 
 
-        return helpers.execNode(@executablePath, parameters, stdin: fileText, throwOnStdErr: false, ignoreExitCode: true).then (result) ->
-          regex = /(Warning|Error)?(.*)\:(\d*)\:(\d*)\s(.*)/g
-          messages = []
+        return helpers.execNode(@executablePath, parameters, stdin: fileText, allowEmptyStderr: true, stream: 'stderr')
+          .then (result) ->
+            regex = /(Warning|Error)?(.*)\:(\d*)\:(\d*)\s(.*)/g
+            messages = []
 
-          while (match = regex.exec(result)) != null
-            messages.push
-              type: if match[1] then match[1] else 'Error'
-              text: match[5]
-              filePath: match[2]
-              range: helpers.rangeFromLineNumber(textEditor, match[3] - 1, match[4] - 1)
-          return messages
+            while (match = regex.exec(result)) != null
+              messages.push
+                type: if match[1] then match[1] else 'Error'
+                text: match[5]
+                filePath: match[2]
+                range: helpers.rangeFromLineNumber(textEditor, match[3] - 1, match[4] - 1)
+            return messages
