@@ -1,7 +1,7 @@
 {
   "name": "linter-pug",
   "main": "./lib/init",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Linter plugin for Pug, using `pug-lint`.",
   "repository": {
     "type": "git",
