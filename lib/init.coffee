@@ -21,13 +21,13 @@ module.exports =
   activate: ->
     require('atom-package-deps').install()
     @subscriptions = new CompositeDisposable
-    @subscriptions.add atom.config.observe 'linter-stylint.executablePath',
+    @subscriptions.add atom.config.observe 'linter-pug.executablePath',
       (executablePath) =>
         @executablePath = executablePath
-    @subscriptions.add atom.config.observe 'linter-stylint.projectConfigFile',
+    @subscriptions.add atom.config.observe 'linter-pug.projectConfigFile',
       (projectConfigFile) =>
         @projectConfigFile = projectConfigFile
-    @subscriptions.add atom.config.observe 'linter-stylint.onlyRunWhenConfig',
+    @subscriptions.add atom.config.observe 'linter-pug.onlyRunWhenConfig',
       (onlyRunWhenConfig) =>
         @onlyRunWhenConfig = onlyRunWhenConfig
 
@@ -56,15 +56,17 @@ module.exports =
         if(@onlyRunWhenConfig || !@runWithStrictMode && projectConfigPath)
           parameters.push('-c', projectConfigPath)
 
-        return helpers.execNode(@executablePath, parameters, stdin: fileText).then (result) ->
-          regex = /(Warning|Error):\s(.*)\nFile:\s(.*)\nLine:\s(\d*)/g
+        parameters.push('-r', 'inline')
+
+
+        return helpers.execNode(@executablePath, parameters, stdin: fileText, throwOnStdErr: false, ignoreExitCode: true).then (result) ->
+          regex = /(Warning|Error)?(.*)\:(\d*)\:(\d*)\s(.*)/g
           messages = []
 
           while (match = regex.exec(result)) != null
             messages.push
-              type: match[1]
-              text: match[2]
-              filePath: match[3]
-              range: helpers.rangeFromLineNumber(textEditor, match[4] - 1)
-
+              type: if match[1] then match[1] else 'Error'
+              text: match[5]
+              filePath: match[2]
+              range: helpers.rangeFromLineNumber(textEditor, match[3] - 1, match[4] - 1)
           return messages
