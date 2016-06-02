@@ -1,5 +1,7 @@
 {CompositeDisposable} = require('atom')
 path = require('path')
+objectAssign = require('object-assign')
+configFile = require('pug-lint/lib/config-file')
 
 module.exports =
   config:
@@ -10,12 +12,13 @@ module.exports =
 
     projectConfigFile:
       type: 'string'
-      default: '.pug-lintrc'
+      default: ''
       description: 'Relative path from project to config file'
 
     onlyRunWhenConfig:
       default: false
       title: 'Run Pug-lint only if config is found'
+      description: 'Disable linter if there is no config file found for the linter.',
       type: 'boolean'
 
   activate: ->
@@ -31,6 +34,22 @@ module.exports =
       (onlyRunWhenConfig) =>
         @onlyRunWhenConfig = onlyRunWhenConfig
 
+  getConfig: (filePath) ->
+    config = undefined
+    if path.isAbsolute(@projectConfigFile)
+      config = configFile.load(false, @projectConfigFile)
+    else
+      config = configFile.load(false, path.join(path.dirname(filePath), @projectConfigFile))
+    if !config and @onlyRunWhenConfig
+      return undefined
+
+    options = {}
+    newConfig = objectAssign(options, config)
+
+    if !newConfig.configPath and config and config.configPath
+      newConfig.configPath = config.configPath
+    return newConfig
+
   provideLinter: ->
     helpers = require('atom-linter')
     provider =
@@ -41,23 +60,22 @@ module.exports =
       lint: (textEditor) =>
         filePath = textEditor.getPath()
         fileText = textEditor.getText()
+        projectConfigPath = @getConfig(filePath)
 
         if !fileText
           return Promise.resolve([])
 
-        projectConfigPath = helpers.find(filePath, @projectConfigFile)
-
         parameters = [filePath]
 
-        if(@onlyRunWhenConfig && !projectConfigPath)
-          atom.notifications.addError 'Pug-lint config no found'
+        if !projectConfigPath || !projectConfigPath.configPath
+          if !@onlyRunWhenConfig
+            atom.notifications.addError 'Pug-lint config not found'
           return Promise.resolve([])
 
-        if(@onlyRunWhenConfig || !@runWithStrictMode && projectConfigPath)
-          parameters.push('-c', projectConfigPath)
+        if(@onlyRunWhenConfig || projectConfigPath)
+          parameters.push('-c', projectConfigPath.configPath)
 
         parameters.push('-r', 'inline')
-
 
         return helpers.execNode(@executablePath, parameters, stdin: fileText, allowEmptyStderr: true, stream: 'stderr')
           .then (result) ->
