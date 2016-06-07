@@ -5,7 +5,7 @@
   "description": "Linter plugin for Pug, using `pug-lint`.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/matthojo/atom-linter-pug.git"
+    "url": "https://github.com/AtomLinter/atom-linter-pug.git"
   },
   "license": "MIT",
   "engines": {
@@ -13,9 +13,9 @@
   },
   "readmeFilename": "README.md",
   "bugs": {
-    "url": "https://github.com/matthojo/atom-linter-pug/issues"
+    "url": "https://github.com/AtomLinter/atom-linter-pug/issues"
   },
-  "homepage": "https://github.com/matthojo/atom-linter-pug",
+  "homepage": "https://github.com/AtomLinter/atom-linter-pug",
   "providedServices": {
     "linter": {
       "versions": {
