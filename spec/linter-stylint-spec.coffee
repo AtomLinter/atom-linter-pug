@@ -33,4 +33,4 @@ describe 'The pug-lint provider for Linter', ->
           expect(messages[0].html).not.toBeDefined()
           expect(messages[0].text).toBe errMsg
           expect(messages[0].filePath).toBe badPug
-          expect(messages[0].range).toEqual [[0, 13], [0, 28]]
+          expect(messages[0].range).toEqual [[0, 13], [0, 20]]
