@@ -53,6 +53,7 @@ module.exports =
   provideLinter: ->
     helpers = require('atom-linter')
     provider =
+      name: 'pug-lint'
       grammarScopes: ['source.jade', 'source.pug']
       scope: 'file'
       lintOnFly: true
