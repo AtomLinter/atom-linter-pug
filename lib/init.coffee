@@ -88,5 +88,5 @@ module.exports =
                 type: if match[1] then match[1] else 'Error'
                 text: match[5]
                 filePath: match[2]
-                range: helpers.rangeFromLineNumber(textEditor, match[3] - 1, match[4] - 1)
+                range: helpers.generateRange(textEditor, match[3] - 1, match[4] - 1)
             return messages
