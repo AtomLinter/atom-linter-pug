@@ -22,7 +22,7 @@ module.exports =
       type: 'boolean'
 
   activate: ->
-    require('atom-package-deps').install()
+    require('atom-package-deps').install('linter-pug')
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.config.observe 'linter-pug.executablePath',
       (executablePath) =>
