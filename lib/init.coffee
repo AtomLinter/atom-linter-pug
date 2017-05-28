@@ -76,13 +76,15 @@ module.exports =
         if(@onlyRunWhenConfig || projectConfig)
           rules = projectConfig
 
-        linter = new Linter()
-        linter.configure rules
-        results = linter.checkString fileText
+        return new Promise (resolve) ->
+          linter = new Linter()
+          linter.configure rules
 
-        return results.map (res) -> {
-          type: res.name
-          filePath: filePath
-          range: helpers.generateRange textEditor,  res.line-1, res.column-1
-          text: res.msg
-        }
+          results = linter.checkString fileText
+
+          resolve results.map (res) -> {
+            type: res.name
+            filePath: filePath
+            range: helpers.generateRange textEditor,  res.line-1, res.column-1
+            text: res.msg
+          }
