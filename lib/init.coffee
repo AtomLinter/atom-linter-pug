@@ -1,4 +1,5 @@
 {CompositeDisposable} = require('atom')
+Linter = require('pug-lint')
 path = require('path')
 objectAssign = require('object-assign')
 configFile = require('pug-lint/lib/config-file')
@@ -59,34 +60,29 @@ module.exports =
       lintOnFly: true
 
       lint: (textEditor) =>
+        rules = []
         filePath = textEditor.getPath()
         fileText = textEditor.getText()
-        projectConfigPath = @getConfig(filePath)
+        projectConfig = @getConfig(filePath)
 
         if !fileText
           return Promise.resolve([])
 
-        parameters = [filePath]
-
-        if !projectConfigPath || !projectConfigPath.configPath
-          if !@onlyRunWhenConfig
+        if !projectConfig || !projectConfig.configPath
+          if @onlyRunWhenConfig
             atom.notifications.addError 'Pug-lint config not found'
-          return Promise.resolve([])
+            return Promise.resolve([])
 
-        if(@onlyRunWhenConfig || projectConfigPath)
-          parameters.push('-c', projectConfigPath.configPath)
+        if(@onlyRunWhenConfig || projectConfig)
+          rules = projectConfig
 
-        parameters.push('-r', 'inline')
+        linter = new Linter()
+        linter.configure rules
+        results = linter.checkString fileText
 
-        return helpers.execNode(@executablePath, parameters, stdin: fileText, allowEmptyStderr: true, stream: 'stderr')
-          .then (result) ->
-            regex = /(Warning|Error)?(.*)\:(\d*)\:(\d*)\s(.*)/g
-            messages = []
-
-            while (match = regex.exec(result)) != null
-              messages.push
-                type: if match[1] then match[1] else 'Error'
-                text: match[5]
-                filePath: match[2]
-                range: helpers.generateRange(textEditor, match[3] - 1, match[4] - 1)
-            return messages
+        return results.map (res) -> {
+          type: res.name
+          filePath: filePath
+          range: helpers.generateRange textEditor,  res.line-1, res.column-1
+          text: res.msg
+        }
