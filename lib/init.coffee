@@ -1,15 +1,32 @@
 {CompositeDisposable} = require('atom')
+bundledPugLint = require('pug-lint')
 path = require('path')
 objectAssign = require('object-assign')
 configFile = require('pug-lint/lib/config-file')
+reqResolve = require('resolve')
+
+pugLints = new Map()
+
+resolvePath = (name, baseDir) ->
+  return new Promise (resolve, reject) ->
+    reqResolve name, { basedir: baseDir }, (err, res) ->
+      reject(err) if err?
+      resolve(res)
+
+getPugLint = (baseDir) ->
+  if pugLints.has(baseDir)
+    return Promise.resolve pugLints.get(baseDir)
+
+  resolvePath('pug-lint', baseDir)
+    .then (pugLintPath) ->
+      pugLints.set(baseDir, require(pugLintPath))
+      return Promise.resolve pugLints.get(baseDir)
+    .catch () ->
+      pugLints.set(baseDir, bundledPugLint)
+      return Promise.resolve pugLints.get(baseDir)
 
 module.exports =
   config:
-    executablePath:
-      type: 'string'
-      default: path.join __dirname, '..', 'node_modules', 'pug-lint', 'bin', 'pug-lint'
-      description: 'Full path to the `pug-lint` executable node script file (e.g. /usr/local/bin/pug-lint)'
-
     projectConfigFile:
       type: 'string'
       default: ''
@@ -23,6 +40,15 @@ module.exports =
 
   activate: ->
     require('atom-package-deps').install('linter-pug')
+
+    if atom.config.get('linter-pug.executablePath')?
+      atom.notifications.addWarning('Removing custom pug-lint path', {
+        detail: "linter-pug has moved to the Node.js API for pug-lint and " +
+          "will now use a project's local instance where possible, falling " +
+          "back to a bundled version of pug-lint where none is found."
+        })
+      atom.config.unset('linter-pug.executablePath')
+
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.config.observe 'linter-pug.executablePath',
       (executablePath) =>
@@ -59,34 +85,38 @@ module.exports =
       lintOnFly: true
 
       lint: (textEditor) =>
+        rules = []
         filePath = textEditor.getPath()
         fileText = textEditor.getText()
-        projectConfigPath = @getConfig(filePath)
+        projectConfig = @getConfig(filePath)
+
+        # Use Atom's project root folder
+        projectDir = atom.project.relativizePath(filePath)[0]
+        if !projectDir?
+          # Fall back to the file directory
+          projectDir = path.dirname(filePath)
 
         if !fileText
           return Promise.resolve([])
 
-        parameters = [filePath]
-
-        if !projectConfigPath || !projectConfigPath.configPath
-          if !@onlyRunWhenConfig
+        if !projectConfig || !projectConfig.configPath
+          if @onlyRunWhenConfig
             atom.notifications.addError 'Pug-lint config not found'
-          return Promise.resolve([])
+            return Promise.resolve([])
 
-        if(@onlyRunWhenConfig || projectConfigPath)
-          parameters.push('-c', projectConfigPath.configPath)
+        if(@onlyRunWhenConfig || projectConfig)
+          rules = projectConfig
 
-        parameters.push('-r', 'inline')
+        return new Promise (resolve) ->
+          getPugLint(projectDir).then (pugLint) ->
+            linter = new pugLint()
+            linter.configure rules
 
-        return helpers.execNode(@executablePath, parameters, stdin: fileText, allowEmptyStderr: true, stream: 'stderr')
-          .then (result) ->
-            regex = /(Warning|Error)?(.*)\:(\d*)\:(\d*)\s(.*)/g
-            messages = []
+            results = linter.checkString fileText
 
-            while (match = regex.exec(result)) != null
-              messages.push
-                type: if match[1] then match[1] else 'Error'
-                text: match[5]
-                filePath: match[2]
-                range: helpers.generateRange(textEditor, match[3] - 1, match[4] - 1)
-            return messages
+            resolve results.map (res) -> {
+              type: res.name
+              filePath: filePath
+              range: helpers.generateRange textEditor,  res.line - 1, res.column - 1
+              text: res.msg
+            }
