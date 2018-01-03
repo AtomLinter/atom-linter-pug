@@ -1,5 +1,7 @@
 ### Project specific config ###
-language: generic
+language: node_js
+node_js:
+  - "8"
 
 env:
   matrix:
@@ -8,6 +10,9 @@ env:
 
 os:
   - linux
+
+before_script:
+  - commitlint-travis
 
 ### Generic setup follows ###
 dist: trusty
