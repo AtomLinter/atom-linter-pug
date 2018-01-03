@@ -36,10 +36,10 @@ describe('The pug-lint provider for Linter', () => {
       const messages = await lint(editor);
 
       expect(messages.length).toEqual(1);
-      expect(messages[0].html).not.toBeDefined();
-      expect(messages[0].text).toBe(errMsg);
-      expect(messages[0].filePath).toBe(badPug);
-      expect(messages[0].range).toEqual([[0, 13], [0, 20]]);
+      expect(messages[0].description).not.toBeDefined();
+      expect(messages[0].excerpt).toBe(errMsg);
+      expect(messages[0].location.file).toBe(badPug);
+      expect(messages[0].location.position).toEqual([[0, 13], [0, 20]]);
     });
   });
 
@@ -56,10 +56,10 @@ describe('The pug-lint provider for Linter', () => {
       const messages = await lint(editor);
 
       expect(messages.length).toEqual(1);
-      expect(messages[0].html).not.toBeDefined();
-      expect(messages[0].text).toBe(errMsg);
-      expect(messages[0].filePath).toBe(noConfigSyntax);
-      expect(messages[0].range).toEqual([[1, 0], [1, 0]]);
+      expect(messages[0].description).not.toBeDefined();
+      expect(messages[0].excerpt).toBe(errMsg);
+      expect(messages[0].location.file).toBe(noConfigSyntax);
+      expect(messages[0].location.position).toEqual([[1, 0], [1, 0]]);
     });
   });
 });
