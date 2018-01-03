@@ -6,7 +6,7 @@ noConfigRule = path.join(__dirname, 'fixtures', 'noConfig', 'badRule.pug')
 noConfigSyntax = path.join(__dirname, 'fixtures', 'noConfig', 'badSyntax.pug')
 
 describe 'The pug-lint provider for Linter', ->
-  lint = require('../lib/init.coffee').provideLinter().lint
+  lint = require('../lib/init').provideLinter().lint
 
   beforeEach ->
     atom.workspace.destroyActivePaneItem()
