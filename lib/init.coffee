@@ -1,16 +1,32 @@
 {CompositeDisposable} = require('atom')
-Linter = require('pug-lint')
+bundledPugLint = require('pug-lint')
 path = require('path')
 objectAssign = require('object-assign')
 configFile = require('pug-lint/lib/config-file')
+reqResolve = require('resolve')
+
+pugLints = new Map()
+
+resolvePath = (name, baseDir) ->
+  return new Promise (resolve, reject) ->
+    reqResolve name, { basedir: baseDir }, (err, res) ->
+      reject(err) if err?
+      resolve(res)
+
+getPugLint = (baseDir) ->
+  if pugLints.has(baseDir)
+    return Promise.resolve pugLints.get(baseDir)
+
+  resolvePath('pug-lint', baseDir)
+    .then (pugLintPath) ->
+      pugLints.set(baseDir, require(pugLintPath))
+      return Promise.resolve pugLints.get(baseDir)
+    .catch () ->
+      pugLints.set(baseDir, bundledPugLint)
+      return Promise.resolve pugLints.get(baseDir)
 
 module.exports =
   config:
-    executablePath:
-      type: 'string'
-      default: path.join __dirname, '..', 'node_modules', 'pug-lint', 'bin', 'pug-lint'
-      description: 'Full path to the `pug-lint` executable node script file (e.g. /usr/local/bin/pug-lint)'
-
     projectConfigFile:
       type: 'string'
       default: ''
@@ -24,6 +40,15 @@ module.exports =
 
   activate: ->
     require('atom-package-deps').install('linter-pug')
+
+    if atom.config.get('linter-pug.executablePath')?
+      atom.notifications.addWarning('Removing custom pug-lint path', {
+        detail: "linter-pug has moved to the Node.js API for pug-lint and " +
+          "will now use a project's local instance where possible, falling " +
+          "back to a bundled version of pug-lint where none is found."
+        })
+      atom.config.unset('linter-pug.executablePath')
+
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.config.observe 'linter-pug.executablePath',
       (executablePath) =>
@@ -65,6 +90,12 @@ module.exports =
         fileText = textEditor.getText()
         projectConfig = @getConfig(filePath)
 
+        # Use Atom's project root folder
+        projectDir = atom.project.relativizePath(filePath)[0]
+        if !projectDir?
+          # Fall back to the file directory
+          projectDir = path.dirname(filePath)
+
         if !fileText
           return Promise.resolve([])
 
@@ -77,14 +108,15 @@ module.exports =
           rules = projectConfig
 
         return new Promise (resolve) ->
-          linter = new Linter()
-          linter.configure rules
+          getPugLint(projectDir).then (pugLint) ->
+            linter = new pugLint()
+            linter.configure rules
 
-          results = linter.checkString fileText
+            results = linter.checkString fileText
 
-          resolve results.map (res) -> {
-            type: res.name
-            filePath: filePath
-            range: helpers.generateRange textEditor,  res.line-1, res.column-1
-            text: res.msg
-          }
+            resolve results.map (res) -> {
+              type: res.name
+              filePath: filePath
+              range: helpers.generateRange textEditor,  res.line - 1, res.column - 1
+              text: res.msg
+            }
