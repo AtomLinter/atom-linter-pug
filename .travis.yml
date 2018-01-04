@@ -20,6 +20,7 @@ before_script:
 after_success:
   # Add apm to the PATH
   - export PATH=${PATH}:${HOME}/atom/usr/bin/
+  - apm --version
   - npm run travis-deploy-once "npm run semantic-release"
 
 ### Generic setup follows ###
