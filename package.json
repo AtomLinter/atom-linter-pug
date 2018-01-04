@@ -9,28 +9,79 @@
   },
   "license": "MIT",
   "engines": {
-    "atom": ">=1.0.0 <2.0.0"
+    "atom": ">=1.7.0 <2.0.0"
   },
   "readmeFilename": "README.md",
   "bugs": {
     "url": "https://github.com/AtomLinter/atom-linter-pug/issues"
   },
   "homepage": "https://github.com/AtomLinter/atom-linter-pug",
+  "configSchema": {
+    "projectConfigFile": {
+      "type": "string",
+      "default": "",
+      "description": "Relative path from project to config file"
+    },
+    "onlyRunWhenConfig": {
+      "default": false,
+      "title": "Run Pug-lint only if config is found",
+      "description": "Disable linter if there is no config file found for the linter.",
+      "type": "boolean"
+    }
+  },
   "providedServices": {
     "linter": {
       "versions": {
-        "1.0.0": "provideLinter"
+        "2.0.0": "provideLinter"
       }
     }
   },
   "dependencies": {
     "atom-linter": "^10.0.0",
-    "atom-package-deps": "^4.0.1",
     "object-assign": "^4.1.0",
     "pug-lint": "^2.1.9",
     "resolve": "^1.5.0"
   },
-  "package-deps": [
-    "linter"
-  ]
+  "devDependencies": {
+    "@commitlint/config-conventional": "^5.2.3",
+    "@commitlint/travis-cli": "^5.2.8",
+    "@semantic-release/apm-config": "^1.0.2",
+    "commitlint": "^5.2.8",
+    "eslint": "^4.14.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "husky": "^0.14.3",
+    "jasmine-fix": "^1.3.1",
+    "semantic-release": "^12.1.0",
+    "travis-deploy-once": "^4.3.0"
+  },
+  "scripts": {
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "semantic-release": "semantic-release",
+    "travis-deploy-once": "travis-deploy-once"
+  },
+  "release": {
+    "extends": "@semantic-release/apm-config"
+  },
+  "eslintConfig": {
+    "rules": {
+      "global-require": "off",
+      "import/no-unresolved": [
+        "error",
+        {
+          "ignore": [
+            "atom"
+          ]
+        }
+      ]
+    },
+    "extends": "airbnb-base",
+    "globals": {
+      "atom": true
+    },
+    "env": {
+      "node": true,
+      "browser": true
+    }
+  }
 }
