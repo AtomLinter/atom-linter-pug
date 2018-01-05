@@ -1,3 +1,11 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.0...v2.0.1) (2018-01-05)
+
+
+### Bug Fixes
+
+* correctly declare the provider for v2 API ([09a8909](https://github.com/AtomLinter/atom-linter-pug/commit/09a8909)), closes [#23](https://github.com/AtomLinter/atom-linter-pug/issues/23) [#24](https://github.com/AtomLinter/atom-linter-pug/issues/24)
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/AtomLinter/atom-linter-pug/compare/v1.3.1...v2.0.0) (2018-01-04)
 
