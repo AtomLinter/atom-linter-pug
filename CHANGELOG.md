@@ -1,3 +1,11 @@
+<a name="2.0.2"></a>
+## [2.0.2](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.1...v2.0.2) (2018-01-11)
+
+
+### Bug Fixes
+
+* **package:** pin pug-lint to version 2.5.0 ([ab08afe](https://github.com/AtomLinter/atom-linter-pug/commit/ab08afe)), closes [#2](https://github.com/AtomLinter/atom-linter-pug/issues/2) [#8](https://github.com/AtomLinter/atom-linter-pug/issues/8)
+
 <a name="2.0.1"></a>
 ## [2.0.1](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.0...v2.0.1) (2018-01-05)
 
