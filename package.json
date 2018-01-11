@@ -46,7 +46,7 @@
     "@commitlint/config-conventional": "^5.2.3",
     "@commitlint/travis-cli": "^5.2.8",
     "@semantic-release/apm-config": "^1.0.2",
-    "commitlint": "^5.2.8",
+    "commitlint": "^6.0.1",
     "eslint": "^4.14.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
