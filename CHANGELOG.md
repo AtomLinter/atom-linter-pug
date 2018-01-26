@@ -1,3 +1,12 @@
+<a name="2.0.3"></a>
+## [2.0.3](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.2...v2.0.3) (2018-01-26)
+
+
+### Bug Fixes
+
+* **config:** set _basePath on linter instance ([d8eec24](https://github.com/AtomLinter/atom-linter-pug/commit/d8eec24))
+* **style:** fix linting errors ([218dd3e](https://github.com/AtomLinter/atom-linter-pug/commit/218dd3e))
+
 <a name="2.0.2"></a>
 ## [2.0.2](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.1...v2.0.2) (2018-01-11)
 
