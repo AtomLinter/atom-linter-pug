@@ -45,14 +45,14 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^6.0.4",
     "@commitlint/travis-cli": "^6.0.1",
-    "@semantic-release/apm-config": "^1.0.2",
+    "@semantic-release/apm-config": "^2.0.0",
     "commitlint": "^6.0.1",
     "eslint": "^4.14.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "husky": "^0.14.3",
     "jasmine-fix": "^1.3.1",
-    "semantic-release": "^12.1.0",
+    "semantic-release": "^15.0.1",
     "travis-deploy-once": "^4.3.0"
   },
   "scripts": {
