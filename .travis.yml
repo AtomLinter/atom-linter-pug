@@ -1,29 +1,38 @@
 ### Project specific config ###
+os: linux
 language: node_js
-node_js:
-  - "8"
+node_js: "lts/*"
 
-env:
-  global:
-    - secure: "ixSEYjGpVSOPGu0t58ZWOZ/FudTrOa1vkV5MxHdkRMyDi2S25naE7cQukxaFwQk/Mn1bk+LJl6cyDT6wrd8BeNdWVOTy/+ZZB2mMa5oYGN1eGFG+p9JAshCLjfNmPj6gz6Ubo5iuKXkBjckvCFj2DQgvgBHRn2mP3+coGLn/9rfChSU0VbyTSx0gHp7+G4VOvs9sgG5tkxLuc1ItHJuDoeZlGW4R660LqY+HDRZRFBcJft2+zPMWOGbOMEMHnNBSOfyfaeAeHulJRd8TJ05/IAyGsoU8biXFxCAjveSSMT6IWAOkBdpaDVacDg0P7ClYvxup0eAImHlOXaoSaMUWLu4pvSk+6FTG2qauRT+t0igeWNuNdu5X4kmdL50vDvykLW88ln1pJ8hflEeH7sV8aTvStklXgSoi5PaCtpKLlDp3HXw9tTgV7iC+afVm2gpJUL7RB7yAInptUci+Bnq7FqVpGXUFlLbIP4VbB8sApI0ZaarbpQVMsP6N3N8pHtOEPMu0PepRIbqnf/cnRKxe1GdI0VU2JTMYgHq+OqFou4EuQKtNW+6552TiXY8Johl3vdJQWCbby88YfPkx1hRETAoVA/fUpkeO3lo4A0PIFzdQeG+8ZyOG4Seg3kvA9Lc8d3L5yEQtdVJR0vWWds7Va++NP1O3bx3eTGBQcBqN+K4="
-    - secure: "VWt+R8fkwoezX+5WdB5Bmb09fIGvOCcwxdYhxdkMQlpWbPwlZoqw3OYY/9/aLGIAEzpYxSpKWvA+McMRmvmzQWRknWmhwwt2+MbQkfpy9k8rpoJmGQsBEWmcC7aQ/38fyDUgx5vxWuADyCVa0dzm6MqgL3E9VlhJaNCnJfsA+oadN6EG5S5sYRTQdBiarZ+GEqzcS50Nii/HuHUT881EXKPcMkSuefyzpzmEbVzwwECG2Huq1po0KErY1Ud4QgQyyI8JG/JaXIoAKloACfkL+oMbInfi0/4/hL4kOUWOOglNc1hwn+C1bTwsndyTaqgAdbIzLbid7acww/Mb0dufCnf4ddF1fQTCYNuaGLe/WuqszQHUMn1/2uxE9hjJY/Q0pAPXmsjV/ju3nEvRNZ6t2ABYSiXkN09Ro6R7DohR18Pdcj5b1Vb0kh8jDg/ljd368FQMN9pvw3Gj7qi3AEAyyDqLgdvm6ikyuQKiOgqwDwsbSCqgBAYZJgRQnCf7h2Wah1zY7djIBG+01mtLbPpcOh3D2mxSg0wmg4E9wMpJwYxsmHy5YvP+wTKinQWk1oPRgUtgEK4Z0m1mHsilcS0dZDDyLf6UxzCqvma/r7eJUV1XrsfSypen1yCyWYdT2SrB7m6tyXp4PjN2htKpemjiY57yHQxSOWWglDDeK6i7xy0="
-  matrix:
-    - ATOM_CHANNEL=beta
-    - ATOM_CHANNEL=stable
+jobs:
+  include:
+    # Run the package specs
+    - stage: test
+      env: ATOM_CHANNEL=stable
+    - stage: test
+      env: ATOM_CHANNEL=beta
 
-os:
-  - linux
+    # Check the commit messages
+    - stage: test
+      language: node_js
+      node_js: lts/*
+      install:
+        - npm install
+      script:
+        - commitlint-travis
 
-before_script:
-  - commitlint-travis
-
-after_success:
-  # Add apm to the PATH
-  - export PATH=${PATH}:${HOME}/atom/usr/bin/
-  - npm run travis-deploy-once "npm run semantic-release"
+    - stage: release
+      # Since the deploy needs APM, currently the simplest method is to run
+      # build-package.sh.
+      before_script:
+        - export PATH=${PATH}:${HOME}/atom/usr/bin/
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script:
+          - npx semantic-release
 
 ### Generic setup follows ###
-script:
+install:
   - curl -s -O https://raw.githubusercontent.com/atom/ci/master/build-package.sh
   - chmod u+x build-package.sh
   - "./build-package.sh"
@@ -52,3 +61,8 @@ addons:
     - fakeroot
     - git
     - libsecret-1-dev
+
+stages:
+  - test
+  - name: release
+    if: (NOT type = pull_request) AND branch = master
