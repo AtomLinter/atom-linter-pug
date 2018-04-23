@@ -1,7 +1,7 @@
 ### Project specific config ###
+os: linux
 language: node_js
-node_js:
-  - "8"
+node_js: "lts/*"
 
 env:
   global:
@@ -10,9 +10,6 @@ env:
   matrix:
     - ATOM_CHANNEL=beta
     - ATOM_CHANNEL=stable
-
-os:
-  - linux
 
 before_script:
   - commitlint-travis
