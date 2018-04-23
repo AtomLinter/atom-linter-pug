@@ -43,10 +43,10 @@
     "resolve": "^1.5.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^6.1.3",
     "@commitlint/config-conventional": "^6.0.4",
     "@commitlint/travis-cli": "^6.0.1",
     "@semantic-release/apm-config": "^2.0.0",
-    "commitlint": "^6.0.1",
     "eslint": "^4.14.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
@@ -59,6 +59,11 @@
   },
   "release": {
     "extends": "@semantic-release/apm-config"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "eslintConfig": {
     "rules": {
