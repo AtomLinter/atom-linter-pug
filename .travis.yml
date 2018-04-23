@@ -3,21 +3,36 @@ os: linux
 language: node_js
 node_js: "lts/*"
 
-env:
-  matrix:
-    - ATOM_CHANNEL=beta
-    - ATOM_CHANNEL=stable
+jobs:
+  include:
+    # Run the package specs
+    - stage: test
+      env: ATOM_CHANNEL=stable
+    - stage: test
+      env: ATOM_CHANNEL=beta
 
-before_script:
-  - commitlint-travis
+    # Check the commit messages
+    - stage: test
+      language: node_js
+      node_js: lts/*
+      install:
+        - npm install
+      script:
+        - commitlint-travis
 
-after_success:
-  # Add apm to the PATH
-  - export PATH=${PATH}:${HOME}/atom/usr/bin/
-  - npm run travis-deploy-once "npm run semantic-release"
+    - stage: release
+      # Since the deploy needs APM, currently the simplest method is to run
+      # build-package.sh.
+      before_script:
+        - export PATH=${PATH}:${HOME}/atom/usr/bin/
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script:
+          - npx semantic-release
 
 ### Generic setup follows ###
-script:
+install:
   - curl -s -O https://raw.githubusercontent.com/atom/ci/master/build-package.sh
   - chmod u+x build-package.sh
   - "./build-package.sh"
@@ -46,3 +61,8 @@ addons:
     - fakeroot
     - git
     - libsecret-1-dev
+
+stages:
+  - test
+  - name: release
+    if: (NOT type = pull_request) AND branch = master
