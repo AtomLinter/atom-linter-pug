@@ -43,7 +43,7 @@
     "resolve": "^1.5.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^6.1.3",
+    "@commitlint/cli": "^7.0.0",
     "@commitlint/config-conventional": "^6.0.4",
     "@commitlint/travis-cli": "^6.0.1",
     "@semantic-release/apm-config": "^2.0.0",
