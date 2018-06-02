@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^6.1.3",
-    "@commitlint/config-conventional": "^6.0.4",
+    "@commitlint/config-conventional": "^7.0.0",
     "@commitlint/travis-cli": "^6.0.1",
     "@semantic-release/apm-config": "^2.0.0",
     "eslint": "^4.14.0",
