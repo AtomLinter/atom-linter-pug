@@ -1,7 +1,9 @@
 'use babel';
 
-// eslint-disable-next-line no-unused-vars
-import { it, fit, wait, beforeEach, afterEach } from 'jasmine-fix';
+import {
+  // eslint-disable-next-line no-unused-vars
+  it, fit, wait, beforeEach, afterEach,
+} from 'jasmine-fix';
 import path from 'path';
 
 const { lint } = require('../lib/init').provideLinter();
@@ -17,11 +19,11 @@ describe('The pug-lint provider for Linter', () => {
     await atom.packages.activatePackage('linter-pug');
   });
 
-  it('should be in the packages list', () =>
-    expect(atom.packages.isPackageLoaded('linter-pug')).toBe(true));
+  it('should be in the packages list',
+    () => expect(atom.packages.isPackageLoaded('linter-pug')).toBe(true));
 
-  it('should be an active package', () =>
-    expect(atom.packages.isPackageActive('linter-pug')).toBe(true));
+  it('should be an active package',
+    () => expect(atom.packages.isPackageActive('linter-pug')).toBe(true));
 
   describe('works with a configuration', () => {
     it('finds nothing wrong with valid file', async () => {
