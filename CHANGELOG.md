@@ -1,3 +1,10 @@
+## [2.0.4](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.3...v2.0.4) (2019-02-06)
+
+
+### Bug Fixes
+
+* **deps:** pin remaining dependencies ([1ad335c](https://github.com/AtomLinter/atom-linter-pug/commit/1ad335c)), closes [#49](https://github.com/AtomLinter/atom-linter-pug/issues/49)
+
 <a name="2.0.3"></a>
 ## [2.0.3](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.2...v2.0.3) (2018-01-26)
 
