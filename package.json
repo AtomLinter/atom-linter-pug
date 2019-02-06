@@ -37,10 +37,10 @@
     }
   },
   "dependencies": {
-    "atom-linter": "^10.0.0",
-    "object-assign": "^4.1.0",
+    "atom-linter": "10.0.0",
+    "object-assign": "4.1.1",
     "pug-lint": "2.5.0",
-    "resolve": "^1.5.0"
+    "resolve": "1.10.0"
   },
   "devDependencies": {
     "@commitlint/cli": "7.5.0",
@@ -55,9 +55,9 @@
     "semantic-release": "15.13.3"
   },
   "husky": {
-   "hooks": {
-     "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-   }
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   },
   "release": {
     "extends": "@semantic-release/apm-config"
