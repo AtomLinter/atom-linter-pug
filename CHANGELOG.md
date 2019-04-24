@@ -1,3 +1,10 @@
+## [2.0.5](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.4...v2.0.5) (2019-04-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency resolve to v1.10.1 ([d203474](https://github.com/AtomLinter/atom-linter-pug/commit/d203474))
+
 ## [2.0.4](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.3...v2.0.4) (2019-02-06)
 
 
