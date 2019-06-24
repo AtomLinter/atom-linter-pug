@@ -1,3 +1,10 @@
+## [2.0.8](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.7...v2.0.8) (2019-06-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pug-lint to v2.6.0 ([abb4cb4](https://github.com/AtomLinter/atom-linter-pug/commit/abb4cb4))
+
 ## [2.0.7](https://github.com/AtomLinter/atom-linter-pug/compare/v2.0.6...v2.0.7) (2019-06-04)
 
 
