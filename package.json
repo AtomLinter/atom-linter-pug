@@ -40,7 +40,7 @@
     "atom-linter": "10.0.0",
     "object-assign": "4.1.1",
     "pug-lint": "2.6.0",
-    "resolve": "1.15.1"
+    "resolve": "1.22.2"
   },
   "devDependencies": {
     "@commitlint/cli": "8.3.5",
